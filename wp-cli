@@ -1,0 +1,4 @@
+set -o allexport; source .env; set +o allexport
+CONTAINER_NAME="wp_$COMPOSE_PROJECT_NAME"
+CONTAINER_NAME+="_php"
+docker exec --user www-data $CONTAINER_NAME php -d xdebug.mode=off /usr/local/bin/wp "$@"

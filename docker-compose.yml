@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  web:
+    build: ./nginx
+    restart: unless-stopped
+    container_name: wp_${COMPOSE_PROJECT_NAME}_web
+    volumes:
+      - ./src:/var/www/html
+      - type: bind
+        source: ./nginx/conf/nginx.conf
+        target: /etc/nginx/nginx.conf
+      - ./nginx/conf/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf/snippets:/etc/nginx/snippets
+      - ./nginx/conf/sites:/etc/nginx/sites
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - php
+    networks:
+      default:
+        ipv4_address: 172.24.0.2
+  php:
+    build: ./php
+    restart: unless-stopped
+    container_name: wp_${COMPOSE_PROJECT_NAME}_php
+    volumes:
+      - ./src:/var/www/html
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+    depends_on:
+      - db
+      - redis
+    networks:
+      default:
+        ipv4_address: 172.24.0.3
+  db:
+    # build: ./mysql
+    image: mysql:8.0
+    restart: unless-stopped
+    container_name: wp_${COMPOSE_PROJECT_NAME}_mysql
+    volumes:
+      - db:/usr/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+      default:
+        ipv4_address: 172.24.0.4
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    container_name: wp_${COMPOSE_PROJECT_NAME}_redis
+    networks:
+      default:
+        ipv4_address: 172.24.0.5
+volumes:
+  db:
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.0.0/24
+          gateway: 172.24.0.1
