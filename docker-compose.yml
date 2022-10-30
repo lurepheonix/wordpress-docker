@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
     container_name: wp_${COMPOSE_PROJECT_NAME}_mysql
     volumes:
-      - db:/usr/lib/mysql
+      - db:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
