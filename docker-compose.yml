@@ -59,6 +59,19 @@ services:
     networks:
       default:
         ipv4_address: 172.24.0.5
+  node:
+    build: 
+      context: ./node
+      args:
+        workdir: ${NODE_WORKDIR}
+    restart: unless-stopped
+    container_name: wp_${COMPOSE_PROJECT_NAME}_node
+    volumes:
+      - ./src:/var/www/html
+
+    networks:
+      default:
+        ipv4_address: 172.24.0.6
 volumes:
   db:
 networks:
