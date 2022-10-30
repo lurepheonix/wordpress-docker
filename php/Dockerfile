@@ -4,7 +4,9 @@ RUN apt-get update && \
     apt-get -y install git 
 
 RUN curl https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o /usr/local/bin/wp
-RUN chmod 755 /usr/local/bin/wp
+RUN chmod 755 /usr/local/bin/wp && \
+    mkdir -p /var/www/.wp-cli/cache/ && \
+    chown -R www-data:www-data /var/www/.wp-cli/cache/
 
 RUN cd /tmp && \
     git clone https://github.com/xdebug/xdebug.git && \
