@@ -16,6 +16,7 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/xdebug
 
+COPY php.ini /usr/local/etc/php/php.ini
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN docker-php-ext-enable xdebug
