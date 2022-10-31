@@ -24,5 +24,9 @@ npm-watch:
 # some sane defaults, edit for your project
 .PHONY: wp-postinstall
 wp-postinstall:
-	@docker compose --file=$(DCF) exec --user www-data php php -d xdebug.mode=off /usr/local/bin/wp plugin install advanced-custom-fields show-current-template wordpress-seo genesis-custom-blocks wp-extra-file-types
-	@docker compose --file=$(DCF) exec --user www-data php php -d xdebug.mode=off /usr/local/bin/wp plugin activate advanced-custom-fields show-current-template wordpress-seo genesis-custom-blocks wp-extra-file-types
+
+.PHONY: restore-db
+restore-db:
+	@docker compose --file=$(DCF) exec db /bin/sh -c "/usr/bin/mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e 'DROP DATABASE $(MYSQL_DATABASE);'"
+	@docker compose --file=$(DCF) exec db /bin/sh -c "/usr/bin/mysql -u root --password=$(MYSQL_ROOT_PASSWORD) -e 'CREATE DATABASE $(MYSQL_DATABASE) charset utf8 collate utf8_general_ci;'"
+	@cat dump.sql | pv | docker compose --file=$(DCF) exec -T db /usr/bin/mysql -u root --password=$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE)
