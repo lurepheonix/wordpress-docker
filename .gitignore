@@ -1,2 +1,5 @@
 .env
 src/
+*.bak
+*.tar.gz
+*.sql
