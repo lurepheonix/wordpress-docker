@@ -9,6 +9,10 @@ up:
 down: 
 	@docker compose down
 
+.PHONY: node-enter
+node-enter:
+	@docker compose --file=$(DCF) run --rm node /bin/bash
+
 .PHONY: npm-i
 npm-i:
 	@docker compose --file=$(DCF) run --rm node /bin/sh -c "npm i --save-dev"
