@@ -21,7 +21,10 @@ services:
       default:
         ipv4_address: 172.24.0.2
   php:
-    build: ./php
+    build: 
+      context: ./php
+      args:
+        xdebugmode: ${XDEBUG_ENABLE}
     restart: unless-stopped
     container_name: wp_${COMPOSE_PROJECT_NAME}_php
     volumes:
